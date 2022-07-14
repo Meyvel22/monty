@@ -61,7 +61,7 @@ void pchar(stack_t **stack, unsigned int line_number);
 void pstr(stack_t **stack, unsigned int line_number);
 void rotl(stack_t **stack, unsigned int line_number);
 void rotr(stack_t **stack, unsigned int line_number);
-void (*get_opcode(char *))(stack_t **stack, unsigned int line_number);
+void (*get_opcode(char *token))(stack_t **stack, unsigned int line_number);
 
 /*helper functions*/
 char **break_line(char *line);
