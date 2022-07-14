@@ -16,6 +16,10 @@ void pall(stack_t **stack, unsigned int line_number)
 	{
 		printf("%d\n", temp->n);
 		temp = temp->next;
+		if (temp == *stack)
+		{
+			return;
+		}
 	}
 }
 
@@ -46,24 +50,24 @@ void pint(stack_t **stack, unsigned int line_number)
   */
 void pchar(stack_t **stack, unsigned int line_number)
 {
-	int num = 0;
+	int num;
 
-	if (*stack == NULL)
+	if (var.stack_len < 1)
 	{
-		free_dlist(*stack);
-		fprintf(stderr, "L%d: can't pchar, stack empty\n", line_number);
+		dprintf(STDOUT_FILENO,
+			"L%u: can't pchar, stack empty\n",
+			line_number);
 		exit(EXIT_FAILURE);
 	}
-
 	num = (*stack)->n;
-	if (num >= 0 && num <= 127)
-		printf("%c\n", num);
-	else
+	if (!isascii(num))
 	{
-		free_dlist(*stack);
-		fprintf(stderr, "L%d: can't pchar, value out of range\n", line_number);
+		dprintf(STDOUT_FILENO,
+			"L%u: can't pchar, value out of range\n",
+			line_number);
 		exit(EXIT_FAILURE);
 	}
+	printf("%c\n", num);
 }
 
 /**

@@ -23,15 +23,22 @@ void (*get_opcode(char *token))(stack_t **head, unsigned int line_number)
 		{"pstr", pstr},
 		{"rotl", rotl},
 		{"rotr", rotr},
+		{"stack", m_stack},
+		{"queue", m_queue},
 		{NULL, NULL}
 	};
-	int i = 0;
-
-	while (opc[i].opcode)
+	
+	for (i = 0; valid_opc[i].opcode != NULL; i++)
 	{
-		if (strcmp(opc[i].opcode, token) == 0)
-			return (opc[i].f);
-		i++;
+		if (strcmp(valid_opc[i].opcode, op) == 0)
+		{
+			valid_opc[i].f(stack, line_number);
+			return;
+		}
 	}
-	return (NULL);
+
+	dprintf(STDOUT_FILENO,
+		"L%u: unknown instruction %s\n",
+		line_number, op);
+	exit(EXIT_FAILURE);
 }
