@@ -5,9 +5,8 @@
   *
   * Return: pointer to function for opcode or NULL.
   */
-void (*get_opcode(char *token))(stack_t **stack, unsigned int line_number)
+void (*get_opcode(char *token))(stack_t **head, unsigned int line_number)
 {
-	size_t i;
 	instruction_t opc[] = {
 		{"push", push},
 		{"pall", pall},
@@ -26,18 +25,13 @@ void (*get_opcode(char *token))(stack_t **stack, unsigned int line_number)
 		{"rotr", rotr},
 		{NULL, NULL}
 	};
-	
-	for (i = 0; opc[i].opcode != NULL; i++)
+	int i = 0;
+
+	while (opc[i].opcode)
 	{
 		if (strcmp(opc[i].opcode, token) == 0)
-		{
-			opc[i].f(stack, line_number);
-			return;
-		}
+			return (opc[i].f);
+		i++;
 	}
-
-	dprintf(STDOUT_FILENO,
-		"L%u: unknown instruction %s\n",
-		line_number, token);
-	exit(EXIT_FAILURE);
+	return (NULL);
 }

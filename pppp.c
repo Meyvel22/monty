@@ -14,12 +14,8 @@ void pall(stack_t **stack, unsigned int line_number)
 	temp = *stack;
 	while (temp != NULL)
 	{
-		printf("%d\n", temp->n);
+		fprintf(stdout, "%d\n", temp->n);
 		temp = temp->next;
-		if (temp == *stack)
-		{
-			return;
-		}
 	}
 }
 
@@ -50,24 +46,24 @@ void pint(stack_t **stack, unsigned int line_number)
   */
 void pchar(stack_t **stack, unsigned int line_number)
 {
-	int num;
+	int num = 0;
 
-	if (var.stack_len < 1)
+	if (*stack == NULL)
 	{
-		dprintf(STDOUT_FILENO,
-			"L%u: can't pchar, stack empty\n",
-			line_number);
+		free_dlist(*stack);
+		fprintf(stderr, "L%d: can't pchar, stack empty\n", line_number);
 		exit(EXIT_FAILURE);
 	}
+
 	num = (*stack)->n;
-	if (!isascii(num))
+	if (num >= 0 && num <= 127)
+		printf("%c\n", num);
+	else
 	{
-		dprintf(STDOUT_FILENO,
-			"L%u: can't pchar, value out of range\n",
-			line_number);
+		free_dlist(*stack);
+		fprintf(stderr, "L%d: can't pchar, value out of range\n", line_number);
 		exit(EXIT_FAILURE);
 	}
-	printf("%c\n", num);
 }
 
 /**
@@ -79,17 +75,24 @@ void pchar(stack_t **stack, unsigned int line_number)
   */
 void pstr(stack_t **stack, unsigned int line_number)
 {
-	stack_t *temp;
+	int num;
+	stack_t *temp = *stack;
 
 	(void)line_number;
 
-	temp = *stack;
-
-	while (temp && temp->n > 0 && temp->n < 128)
+	if (*stack == NULL)
+		printf("\n");
+	else
 	{
-		printf("%c", temp->n);
-		temp = temp->next;
+		while (temp != NULL)
+		{
+			num = temp->n;
+			temp = temp->next;
+			if (num > 0 && num <= 127)
+				printf("%c", num);
+			else
+				break;
+		}
+		printf("\n");
 	}
-	
-	printf("\n");
 }
