@@ -1,4 +1,4 @@
-#include "monty.h"
+include "monty.h"
 /**
   * pall - prints all arguments inserted.
   * @stack: double pointer to stack;
@@ -14,8 +14,12 @@ void pall(stack_t **stack, unsigned int line_number)
 	temp = *stack;
 	while (temp != NULL)
 	{
-		fprintf(stdout, "%d\n", temp->n);
+		printf("%d\n", temp->n);
 		temp = temp->next;
+		if (temp == *stack)
+		{
+			return;
+		}
 	}
 }
 
@@ -46,25 +50,25 @@ void pint(stack_t **stack, unsigned int line_number)
   */
 void pchar(stack_t **stack, unsigned int line_number)
 {
-	int num = 0;
+    int ch;
 
-	if (*stack == NULL)
+	if (var.stack_len < 1)
 	{
-		free_dlist(*stack);
-		fprintf(stderr, "L%d: can't pchar, stack empty\n", line_number);
+		dprintf(STDOUT_FILENO,
+			"L%u: can't pchar, stack empty\n",
+			line_number);
 		exit(EXIT_FAILURE);
 	}
-
-	num = (*stack)->n;
-	if (num >= 0 && num <= 127)
-		printf("%c\n", num);
-	else
+	ch = (*stack)->n;
+	if (!isascii(ch))
 	{
-		free_dlist(*stack);
-		fprintf(stderr, "L%d: can't pchar, value out of range\n", line_number);
+		dprintf(STDOUT_FILENO,
+			"L%u: can't pchar, value out of range\n",
+			line_number);
 		exit(EXIT_FAILURE);
 	}
-}
+	printf("%c\n", ch);
+
 
 /**
   * pstr - prints the string starting at the top of the stack.
@@ -75,24 +79,21 @@ void pchar(stack_t **stack, unsigned int line_number)
   */
 void pstr(stack_t **stack, unsigned int line_number)
 {
-	int num;
-	stack_t *temp = *stack;
+	stack_t *temp;
+	int ch;
 
 	(void)line_number;
 
-	if (*stack == NULL)
-		printf("\n");
-	else
+	temp = *stack;
+	while (temp != NULL)
 	{
-		while (temp != NULL)
-		{
-			num = temp->n;
-			temp = temp->next;
-			if (num > 0 && num <= 127)
-				printf("%c", num);
-			else
-				break;
-		}
-		printf("\n");
+		ch = temp->n;
+		if (!isascii(ch) || ch == 0)
+			break;
+		putchar(ch);
+		temp = temp->next;
+		if (temp == *stack)
+			break;
 	}
+	putchar('\n');
 }
