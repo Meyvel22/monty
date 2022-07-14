@@ -7,6 +7,7 @@
   */
 void (*get_opcode(char *token))(stack_t **head, unsigned int line_number)
 {
+	size_t i;
 	instruction_t opc[] = {
 		{"push", push},
 		{"pall", pall},
@@ -23,22 +24,20 @@ void (*get_opcode(char *token))(stack_t **head, unsigned int line_number)
 		{"pstr", pstr},
 		{"rotl", rotl},
 		{"rotr", rotr},
-		{"stack", m_stack},
-		{"queue", m_queue},
 		{NULL, NULL}
 	};
 	
-	for (i = 0; valid_opc[i].opcode != NULL; i++)
+	for (i = 0; opc[i].opcode != NULL; i++)
 	{
-		if (strcmp(valid_opc[i].opcode, op) == 0)
+		if (strcmp(opc[i].opcode, token) == 0)
 		{
-			valid_opc[i].f(stack, line_number);
+			opc[i].f(head, line_number);
 			return;
 		}
 	}
 
 	dprintf(STDOUT_FILENO,
 		"L%u: unknown instruction %s\n",
-		line_number, op);
+		line_number, token);
 	exit(EXIT_FAILURE);
 }
