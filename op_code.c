@@ -5,7 +5,7 @@
   *
   * Return: pointer to function for opcode or NULL.
   */
-void (*get_opcode(char *token))(stack_t **head, unsigned int line_number)
+void (*get_opcode(char *token))(stack_t **stack, unsigned int line_number)
 {
 	size_t i;
 	instruction_t opc[] = {
@@ -31,7 +31,7 @@ void (*get_opcode(char *token))(stack_t **head, unsigned int line_number)
 	{
 		if (strcmp(opc[i].opcode, token) == 0)
 		{
-			opc[i].f(head, line_number);
+			opc[i].f(stack, line_number);
 			return;
 		}
 	}
